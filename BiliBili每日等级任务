@@ -1,0 +1,10 @@
+#######################################
+#应用名称：  BiliBili每日等级任务
+#使用说明：  定时任务及Cookie获取
+########################################
+
+
+hostname=app.bilibili.com，m.bilibili.com
+
+^https?:\/\/app\.bilibili\.com\/x\/resource\/domain\? url script-response-body https://raw.githubusercontent.com/ClydeTime/BiliBili/main/js/BiliBiliDailyBonus.js
+^https?:\/\/m.bilibili.com/$ url script-response-body https://raw.githubusercontent.com/ClydeTime/BiliBili/main/js/BiliBiliDailyBonus.js
