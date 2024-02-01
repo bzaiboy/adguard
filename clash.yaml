@@ -1,0 +1,343 @@
+---
+port: 7890
+socks-port: 7891
+redir-port: 7892
+mixed-port: 7893
+allow-lan: true
+bind-address: "*"
+mode: rule
+log-level: info
+ipv6: true
+external-controller: 127.0.0.1:9090
+dns:
+  enable: true
+  ipv6: true
+  listen: 0.0.0.0:53
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter:
+  - "*.lan"
+  - localhost.ptlogin2.qq.com
+  - "+.srv.nintendo.net"
+  - "+.stun.playstation.net"
+  - "+.msftconnecttest.com"
+  - "+.msftncsi.com"
+  - "+.xboxlive.com"
+  - msftconnecttest.com
+  - xbox.*.microsoft.com
+  - "*.battlenet.com.cn"
+  - "*.battlenet.com"
+  - "*.blzstatic.cn"
+  - "*.battle.net"
+  nameserver:
+  - https://dns.alidns.com/dns-query
+  - https://doh.pub/dns-query
+  fallback:
+  - https://cloudflare-dns.com/dns-query
+  - https://dns.google/dns-query
+  - https://dns.alidns.com/dns-query
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    ipcidr:
+    - 240.0.0.0/4
+pr:
+  type: select
+  proxies:
+  - Auto
+  - Proxy
+  - HongKong
+  - Japan
+  - America
+  - Others
+  - Singapore
+  - DIRECT
+p:
+  type: http
+  interval: 86400
+  health-check:
+    enable: true
+    url: http://www.gstatic.com/generate_204
+    interval: 1800
+auto:
+  type: url-test
+  lazy: true
+  url: http://www.gstatic.com/generate_204
+  interval: 900
+  use:
+  - Subscribe
+use:
+  type: select
+  use:
+  - Subscribe
+c:
+  type: http
+  behavior: classical
+  interval: 86400
+d:
+  type: http
+  behavior: domain
+  interval: 86400
+i:
+  type: http
+  behavior: ipcidr
+  interval: 86400
+proxy-providers:
+  Subscribe:
+    type: http
+    path: "./proxy_provider/Subscribe.yaml"
+    url: https://sub.xeton.dev/sub?target=clash&url=https://upbeat-bassi-64769e.netlify.app&list=true&udp=false
+    interval: 3600
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 1800
+proxies:
+
+proxy-groups:
+- name: Proxy
+  type: select
+  proxies:
+
+  use:
+  - Subscribe
+- name: Global
+  type: select
+  proxies:
+  - Auto
+  - Proxy
+  - DIRECT
+- name: Apple
+  type: select
+  proxies:
+  - Auto
+  - Proxy
+  - DIRECT
+- name: BiliBili
+  type: select
+  proxies:
+  - DIRECT
+  - HongKong
+  - Japan
+- name: OpenAi
+  type: select
+  proxies:
+  - Japan
+  - America
+- name: Disney
+  type: select
+  proxies:
+  - HongKong
+  - Japan
+  - America
+  - Singapore
+- name: Netflix
+  type: select
+  proxies:
+  - HongKong
+  - Japan
+  - Singapore
+- name: Google
+  type: select
+  proxies:
+  - Auto
+  - Proxy
+  - DIRECT
+- name: Telegram
+  type: select
+  proxies:
+  - Auto
+  - Proxy
+  - DIRECT
+
+- name: Twitter
+  type: select
+  proxies:
+  - Auto
+  - Proxy
+  - Singapore
+- name: Games
+  type: select
+  proxies:
+  - Auto
+  - Proxy
+  - DIRECT
+- name: AdBlock
+  type: select
+  proxies:
+  - REJECT
+- name: Final
+  type: select
+  proxies:
+  - Auto
+  - Proxy
+  - DIRECT
+- name: Auto
+  type: url-test
+  use:
+  - Subscribe
+  url: http://www.gstatic.com/generate_204
+  interval: '900'
+- name: HongKong
+  type: select
+  proxies:
+
+  use:
+  - Subscribe
+  filter: 港|HK|(?i)Hong
+- name: Japan
+  type: url-test
+  proxies:
+
+  use:
+  - Subscribe
+  filter: 日|东京|JP|(?i)Japan
+  url: http://www.gstatic.com/generate_204
+  interval: '900'
+- name: Others
+  type: url-test
+  proxies:
+
+  use:
+  - Subscribe
+  filter: "^((?!香港|HK|Hong Kong|台湾|TW|TaiWan|新加坡|SG|Singapore|狮城|日本|JP|  Japan|美国|US|States|American|Music).)*$"
+  url: http://www.gstatic.com/generate_204
+  interval: '900'
+- name: America
+  type: url-test
+  use:
+  - Subscribe 
+  filter: 美|US|(?i)States|American 
+  url: http://www.gstatic.com/generate_204
+  interval: '900'
+- name: Singapore
+  type: url-test
+  use:
+  - Subscribe
+  filter: 新|坡|SG|(?i)Singapore
+  url: http://www.gstatic.com/generate_204
+  interval: '900'
+rule-providers:
+  Direct:
+    type: http
+    behavior: domain
+    interval: 86400
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Direct/Direct.yaml
+    path: "./ruleset/Direct.yaml"
+  Lan:
+    type: http
+    behavior: classical
+    interval: 86400
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Lan/Lan.yaml
+    path: "./ruleset/Lan.yaml"
+  Download:
+    type: http
+    behavior: classical
+    interval: 86400
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Download/Download.yaml
+    path: "./ruleset/Download.yaml"
+  Ad:
+    type: http
+    behavior: domain
+    interval: 86400
+    url: https://anti-ad.net/clash.yaml
+    path: "./ruleset/anti-ad-clash.yaml"
+  OpenAi:
+    type: http
+    behavior: classical
+    interval: 86400
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/OpenAI/OpenAI.yaml
+    path: "./ruleset/OpenAi.yaml"
+  BiliBili:
+    type: http
+    behavior: classical
+    interval: 86400
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/BiliBili/BiliBili.yaml
+    path: "./ruleset/BiliBili.yaml"
+  Disney:
+    type: http
+    behavior: classical
+    interval: 86400
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Disney/Disney.yaml
+    path: "./ruleset/Disney.yaml"
+  Netflix:
+    type: http
+    behavior: classical
+    interval: 86400
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Netflix/Netflix.yaml
+    path: "./ruleset/Netflix.yaml"
+  Apple:
+    type: http
+    behavior: classical
+    interval: 86400
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Apple/Apple_Classical.yaml
+    path: "./ruleset/Apple.yaml"
+  Github:
+    type: http
+    behavior: classical
+    interval: 86400
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/GitHub/GitHub.yaml
+    path: "./ruleset/Github.yaml"
+  Microsoft:
+    type: http
+    behavior: classical
+    interval: 86400
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Microsoft/Microsoft.yaml
+    path: "./ruleset/Microsoft.yaml"
+  Google:
+    type: http
+    behavior: classical
+    interval: 86400
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Google/Google.yaml
+    path: "./ruleset/Google.yaml"
+
+  Telegram:
+    type: http
+    behavior: classical
+    interval: 86400
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Telegram/Telegram.yaml
+    path: "./ruleset/Telegram.yaml"
+  Twitter:
+    type: http
+    behavior: classical
+    interval: 86400
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Twitter/Twitter.yaml
+    path: "./ruleset/Twitter.yaml"
+  Game:
+    type: http
+    behavior: classical
+    interval: 86400
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Game/Game.yaml
+    path: "./ruleset/Game.yaml"
+  ChinaIP:
+    type: http
+    behavior: ipcidr
+    interval: 86400
+    url: https://cdn.jsdelivr.net/gh/soffchen/GeoIP2-CN@release/clash-rule-provider.yml
+    path: "./ruleset/ChinaIP.yaml"
+  ProxyLite:
+    type: http
+    behavior: classical
+    interval: 86400
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/ProxyLite/ProxyLite.yaml
+    path: "./ruleset/ProxyLite.yaml"
+rules:
+- RULE-SET,Direct,DIRECT
+- RULE-SET,Lan,DIRECT
+- RULE-SET,Download,DIRECT
+- RULE-SET,Ad,AdBlock
+- RULE-SET,OpenAi,OpenAi
+- RULE-SET,BiliBili,BiliBili
+- RULE-SET,Disney,Disney
+- RULE-SET,Netflix,Netflix
+- RULE-SET,Apple,Apple
+- RULE-SET,Github,Global
+- RULE-SET,Microsoft,Global
+- RULE-SET,Google,Google
+- RULE-SET,Telegram,Telegram
+- RULE-SET,Twitter,Global
+- RULE-SET,Game,Games
+- RULE-SET,ProxyLite,Global
+- RULE-SET,ChinaIP,DIRECT
+- GEOIP,CN,DIRECT
+- MATCH,Final
