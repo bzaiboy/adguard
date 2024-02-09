@@ -1,0 +1,6 @@
+# NAME: Home
+# DOMAIN-SUFFIX: 2
+# TOTAL: 2
+payload:
+  - DOMAIN-SUFFIX,kuakuani.com
+  - DOMAIN-SUFFIX,agenjp.tk
